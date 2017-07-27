@@ -16,16 +16,16 @@
 */
 
 // what is your Mysql database server hostname
-$database_host = 'DB_HOST';
+$database_host = 'MYSQL_HOST';
 
 // what is the name of the database we are using
-$database_name = 'DB_NAME';
+$database_name = 'MYSQL_DATABASE';
 
 // what user has access to this database
-$database_user = 'DB_USER';
+$database_user = 'MYSQL_USER';
 
 // and what is the password to login to control the database
-$database_password = 'DB_PASS';
+$database_password = 'MYSQL_PASSWORD';
 
 // if you have an SMTP server, set it here. Otherwise it will use the normal php mail() function
 //# if your SMTP server is called "smtp.mydomain.com" you enter this below like this:
@@ -114,4 +114,3 @@ $bounce_unsubscribe_threshold = 5;
 // check the extended config for more info
 // in most cases, it is fine to leave this as it is
 define('HASH_ALGO', 'sha256');
-

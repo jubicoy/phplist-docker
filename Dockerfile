@@ -2,7 +2,7 @@ FROM jubicoy/nginx-php:latest
 ENV PHPLIST_VERSION 3.3.1
 
 RUN apt-get update && \
-	apt-get -y install php5-mysql curl  && \
+	apt-get -y install php5-mysql curl nano  && \
 	apt-get clean
 
 

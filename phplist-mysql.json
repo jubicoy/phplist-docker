@@ -130,20 +130,20 @@
 					"value" :"${PHPLIST_SERVICE_NAME}"
 				    },
                                     {
-                                        "name": "DB_HOST",
-                                        "value": "${DB_HOST}"
+                                        "name": "MYSQL_HOST",
+                                        "value": "${MYSQL_HOST}"
                                     },
                                     {
-                                        "name": "DB_NAME",
-                                        "value": "${DB_NAME}"
+                                        "name": "MYSQL_DATABASE",
+                                        "value": "${MYSQL_DATABASE}"
                                     },
                                     {
-                                        "name": "DB_USER",
-                                        "value": "${DB_USER}"
+                                        "name": "MYSQL_USER",
+                                        "value": "${MYSQL_USER}"
                                     },
                                     {
-                                        "name": "DB_PASS",
-                                        "value": "${DB_PASS}"
+                                        "name": "MYSQL_PASSWORD",
+                                        "value": "${MYSQL_PASSWORD}"
                                     },
                                     {
                                         "name": "SMTP_HOST",
@@ -324,7 +324,7 @@
             "required": true
         },
         {
-            "name": "MYSQL_PASSWORD",
+            "name": "MYSQL_PASS",
             "description": "MySQL database user's password..",
             "generate": "expression",
             "from": "[a-zA-Z0-9]{16}",
@@ -333,8 +333,29 @@
         {
             "name": "MYSQL_DATABASE",
             "description": "MySQL database name.",
-            "value": "phplist",
+            "value": "phplistdb",
             "required": true
+	},
+	{
+	    "name": "SMTP_HOST",
+	    "description": "SMTP hostname or IP.",
+	    "required": true
+	},
+	{
+	    "name": "SMTP_PORT",
+	    "description": "SMTP port to be used.",
+	    "value": "587",
+	    "required": true
+	},
+	{
+	    "name": "SMTP_USER",
+	    "description": "SMTP username.",
+	    "required": true
+	},
+	{
+	    "name": "SMTP_PASS",
+	    "description": "SMTP user's password.",
+	    "required": true
 	}
     ],
     "labels": {
