@@ -1,0 +1,343 @@
+{
+    "kind": "Template",
+    "apiVersion": "v1",
+    "metadata": {
+        "name": "phplist-mysql",
+        "namespace": "openshift",
+        "annotations": {
+            "description": "Php based mass mailing solution.",
+            "iconClass": "icon-php",
+            "tags": "instant-app,mysql,php,phplist"
+        }
+    },
+    "objects": [
+        {
+            "kind": "Service",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "${PHPLIST_SERVICE_NAME}-web",
+                "annotations": {
+                    "service.alpha.openshift.io/dependencies": "[{\"name\": \"${PHPLIST_SERVICE_NAME}-db\", \"kind\": \"Service\"}]"
+                },
+                "creationTimestamp": null
+            },
+            "spec": {
+                "ports": [
+                    {
+                        "name": "web",
+                        "protocol": "TCP",
+                        "port": 5000,
+                        "targetPort": 5000,
+                        "nodePort": 0
+                    }
+                ],
+                "selector": {
+                    "name": "${PHPLIST_SERVICE_NAME}-web"
+                },
+                "portalIP": "",
+                "type": "ClusterIP",
+                "sessionAffinity": "None"
+            }
+        },
+        {
+            "kind": "Service",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "${PHPLIST_SERVICE_NAME}-db",
+                "creationTimestamp": null
+            },
+            "spec": {
+                "ports": [
+                    {
+                        "name": "database",
+                        "protocol": "TCP",
+                        "port": 3306,
+                        "targetPort": "${PHPLIST_SERVICE_NAME}-db",
+                        "nodePort": 0
+                    }
+                ],
+                "selector": {
+                    "name": "${PHPLIST_SERVICE_NAME}-db"
+                },
+                "portalIP": "",
+                "type": "ClusterIP",
+                "sessionAffinity": "None"
+            }
+        },
+        {
+            "kind": "Route",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "phplist",
+                "creationTimestamp": null
+            },
+            "spec": {
+                "to": {
+                    "kind": "Service",
+                    "name": "${PHPLIST_SERVICE_NAME}-web"
+                },
+                "port": {
+                    "targetPort": "web"
+                },
+                "tls": {
+                    "termination": "edge",
+                    "insecureEdgeTerminationPolicy": "Allow"
+                }
+            }
+        },
+        {
+            "kind": "DeploymentConfig",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "${PHPLIST_SERVICE_NAME}-web",
+                "creationTimestamp": null
+            },
+            "spec": {
+                "strategy": {
+                    "type": "Rolling",
+                    "resources": {}
+                },
+                "triggers": [
+                    {
+                        "type": "ConfigChange"
+                    }
+                ],
+                "replicas": 1,
+                "selector": {
+                    "name": "${PHPLIST_SERVICE_NAME}-web"
+                },
+                "template": {
+                    "metadata": {
+                        "creationTimestamp": null,
+                        "labels": {
+                            "name": "${PHPLIST_SERVICE_NAME}-web"
+                        }
+                    },
+                    "spec": {
+                        "containers": [
+                            {
+                                "name": "phplist-web",
+                                "image": "jubicoy/phplist",
+                                "ports": [
+                                    {
+                                        "containerPort": 5000,
+                                        "name": "${PHPLIST_SERVICE_NAME}-web"
+                                    }
+                                ],
+                                "env": [
+				    {
+					"name": "PHPLIST_SERVICE_NAME",
+					"value" :"${PHPLIST_SERVICE_NAME}"
+				    },
+                                    {
+                                        "name": "DB_HOST",
+                                        "value": "${DB_HOST}"
+                                    },
+                                    {
+                                        "name": "DB_NAME",
+                                        "value": "${DB_NAME}"
+                                    },
+                                    {
+                                        "name": "DB_USER",
+                                        "value": "${DB_USER}"
+                                    },
+                                    {
+                                        "name": "DB_PASS",
+                                        "value": "${DB_PASS}"
+                                    },
+                                    {
+                                        "name": "SMTP_HOST",
+                                        "value": "${SMTP_HOST}"
+                                    },
+                                    {
+                                        "name": "SMTP_PORT",
+                                        "value": "${SMTP_PORT}"
+                                    },
+                                    {
+                                        "name": "SMTP_USER",
+                                        "value": "${SMTP_USER}"
+                                    },
+                                    {
+                                        "name": "SMTP_PASS",
+                                        "value": "${SMTP_PASS}"
+                                    }
+                                ],
+                                "resources": {},
+                                "volumeMounts": [
+                                    {
+                                        "name": "${PHPLIST_SERVICE_NAME}-data",
+                                        "mountPath": "/volume"
+                                    }
+                                ],
+                                "terminationMessagePath": "/dev/termination-log",
+                                "imagePullPolicy": "Always",
+                                "capabilities": {},
+                                "securityContext": {
+                                    "capabilities": {},
+                                    "privileged": false
+                                }
+                            }
+                        ],
+                        "volumes": [
+                            {
+                                "name": "${PHPLIST_SERVICE_NAME}-data",
+                                "persistentVolumeClaim": {
+                                    "claimName": "${PHPLIST_SERVICE_NAME}"
+                                }
+                            }
+                        ],
+                        "restartPolicy": "Always",
+                        "dnsPolicy": "ClusterFirst"
+                    }
+                }
+            }
+        },
+        {
+            "kind": "DeploymentConfig",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "${PHPLIST_SERVICE_NAME}-db",
+                "creationTimestamp": null
+            },
+            "spec": {
+                "strategy": {
+                    "type": "Rolling",
+                    "resources": {}
+                },
+                "triggers": [
+                    {
+                        "type": "ConfigChange"
+                    }
+                ],
+                "replicas": 1,
+                "selector": {
+                    "name": "${PHPLIST_SERVICE_NAME}-db"
+                },
+                "template": {
+                    "metadata": {
+                        "creationTimestamp": null,
+                        "labels": {
+                            "name": "${PHPLIST_SERVICE_NAME}-db"
+                        }
+                    },
+                    "spec": {
+                        "containers": [
+                            {
+                                "name": "mysql",
+                                "image": "jubicoy/mysql55-jessie",
+                                "ports": [
+                                    {
+                                        "containerPort": 3306,
+                                        "name": "${PHPLIST_SERVICE_NAME}-db"
+                                    }
+                                ],
+                                "env": [
+                                    {
+                                        "name": "MYSQL_USER",
+                                        "value": "${MYSQL_USER}"
+                                    },
+                                    {
+                                        "name": "MYSQL_ROOT_PASSWORD",
+                                        "value": "${MYSQL_ROOT_PASSWORD}"
+                                    },
+                                    {
+                                        "name": "MYSQL_PASSWORD",
+                                        "value": "${MYSQL_PASSWORD}"
+                                    },
+                                    {
+                                        "name": "MYSQL_DATABASE",
+                                        "value": "${MYSQL_DATABASE}"
+                                    }
+                                ],
+                                "resources": {},
+                                "volumeMounts": [
+                                    {
+                                        "name": "${PHPLIST_SERVICE_NAME}-data",
+                                        "mountPath": "/volume"
+                                    }
+                                ],
+                                "terminationMessagePath": "/dev/termination-log",
+                                "imagePullPolicy": "Always",
+                                "capabilities": {},
+                                "securityContext": {
+                                    "capabilities": {},
+                                    "privileged": false
+                                }
+                            }
+                        ],
+                        "volumes": [
+                            {
+                                "name": "${PHPLIST_SERVICE_NAME}-data",
+                                "persistentVolumeClaim": {
+                                    "claimName": "${PHPLIST_SERVICE_NAME}"
+                                }
+                            }
+                        ],
+                        "restartPolicy": "Always",
+                        "dnsPolicy": "ClusterFirst"
+                    }
+                }
+            }
+        },
+        {
+            "kind": "PersistentVolumeClaim",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "${PHPLIST_SERVICE_NAME}"
+            },
+            "spec": {
+                "accessModes": [
+                    "ReadWriteMany"
+                ],
+                "resources": {
+                    "requests": {
+                        "storage": "${VOLUME_CAPACITY}"
+                    }
+                }
+            }
+        }
+    ],
+    "parameters": [
+        {
+            "name": "PHPLIST_SERVICE_NAME",
+            "description": "Phplist service name.",
+            "value": "phplist"
+        },
+        {
+            "name": "VOLUME_CAPACITY",
+            "description": "Volume space available for data, e.g. 512Mi, 2Gi",
+            "value": "10Gi",
+            "required": true
+        },
+        {
+            "name": "MYSQL_ROOT_PASSWORD",
+            "description": "MySQL root password.",
+            "generate": "expression",
+            "from": "[a-zA-Z0-9]{16}",
+            "required": true
+        },
+        {
+            "name": "MYSQL_USER",
+            "description": "MySQL database username.",
+            "generate": "expression",
+            "from": "user[A-Z0-9]{3}",
+            "required": true
+        },
+        {
+            "name": "MYSQL_PASSWORD",
+            "description": "MySQL database user's password..",
+            "generate": "expression",
+            "from": "[a-zA-Z0-9]{16}",
+            "required": true
+        },
+        {
+            "name": "MYSQL_DATABASE",
+            "description": "MySQL database name.",
+            "value": "phplist",
+            "required": true
+	}
+    ],
+    "labels": {
+        "template": "phplist-mysql"
+    }
+}
