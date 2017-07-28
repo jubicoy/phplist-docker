@@ -2,7 +2,7 @@ FROM jubicoy/nginx-php:latest
 ENV PHPLIST_VERSION 3.3.1
 
 RUN apt-get update && \
-	apt-get -y install php5-mysql curl nano  && \
+	apt-get -y install php5-mysql php-xml curl nano  && \
 	apt-get clean
 
 
@@ -13,7 +13,10 @@ ADD config/config.php /workdir/config.php
 
 RUN mkdir -p /var/www/phplist/public_html/lists
 
-RUN mv /workdir/phplist-${PHPLIST_VERSION}/public_html/lists/* /var/www/phplist/public_html/lists/ && mv /workdir/config.php /var/www/phplist/public_html/lists/config/config.php
+RUN mv /workdir/phplist-${PHPLIST_VERSION}/public_html/lists/* /var/www/phplist/public_html/lists/
+
+#ADD config/config.php /workdir/config.php
+RUN ln -s /volume/conf/config.php /var/www/phplist/public_html/lists/config/config.php
 
 ADD config/default.conf /workdir/default.conf
 RUN rm -rf /etc/nginx/conf.d/default.conf && ln -s /volume/conf/default.conf /etc/nginx/conf.d/default.conf
