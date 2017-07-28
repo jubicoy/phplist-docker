@@ -1,8 +1,10 @@
-FROM jubicoy/nginx-php:latest
+FROM jubicoy/nginx-php:php7
 ENV PHPLIST_VERSION 3.3.1
 
 RUN apt-get update && \
-	apt-get -y install php5-mysql php-xml curl nano  && \
+	apt-get -y install php7.0-mysql php7.0-xml php7.0-common php7.0-dom php7.0-xml \
+	php7.0-simplexml libxml2-dev curl \
+	nano wget unzip && \
 	apt-get clean
 
 
@@ -26,6 +28,13 @@ ADD entrypoint.sh /workdir/entrypoint.sh
 RUN mkdir /volume && chmod 777 /volume
 
 ADD config/nginx.conf /etc/nginx/nginx.conf
+# Install common plugin
+RUN wget -P /workdir/ https://github.com/bramley/phplist-plugin-common/archive/master.zip
+RUN unzip master.zip && mv /workdir/phplist-plugin-common-master/plugins/* /var/www/phplist/public_html/lists/admin/plugins/ && rm -rfv /workdir/master.zip /workdir/phplist*
+
+# Install rss plugin
+RUN wget -P /workdir/ https://github.com/bramley/phplist-plugin-rssfeed/archive/master.zip
+RUN unzip master.zip && mv /workdir/phplist-plugin-rssfeed-master/plugins/* /var/www/phplist/public_html/lists/admin/plugins/ && rm -rfv /workdir/master.zip /workdir/phplist*
 
 RUN chown -R 104:0 /var/www && chmod -R g+rw /var/www && \
 	chmod a+x /workdir/entrypoint.sh && chmod g+rw /workdir
@@ -33,4 +42,4 @@ RUN chown -R 104:0 /var/www && chmod -R g+rw /var/www && \
 VOLUME ["/volume"]
 EXPOSE 5000
 
-USER 104
+USER 100104

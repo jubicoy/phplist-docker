@@ -31,5 +31,4 @@ if [ ! -f /volume/conf/default.conf ]; then
 	mv /workdir/default.conf /volume/conf/default.conf
 fi
 
-
 exec "/usr/bin/supervisord"
