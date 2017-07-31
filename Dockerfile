@@ -4,7 +4,7 @@ ENV PHPLIST_VERSION 3.3.1
 RUN apt-get update && \
 	apt-get -y install php7.0-mysql php7.0-xml php7.0-common php7.0-dom php7.0-xml \
 	php7.0-simplexml php7.0-zip libxml2-dev curl \
-	nano wget unzip && \
+	wget unzip vim && \
 	apt-get clean
 
 
