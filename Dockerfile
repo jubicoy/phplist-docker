@@ -43,6 +43,9 @@ RUN /opt/build.sh
 
 COPY config/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
+# Create folder for RSS feed
+RUN ln -s /volume/rss /var/www/phplist/public_html/
+
 RUN chown -R 104:0 /var/www && chmod -R g+rw /var/www && \
 	chmod a+x /workdir/entrypoint.sh && chmod g+rw /workdir
 
