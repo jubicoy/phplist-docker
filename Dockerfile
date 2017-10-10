@@ -4,7 +4,7 @@ ENV PHPLIST_VERSION 3.3.1
 RUN apt-get update && \
 	apt-get -y install php7.0-mysql php7.0-xml php7.0-common php7.0-dom php7.0-xml \
 	php7.0-simplexml php7.0-zip libxml2-dev curl \
-	wget unzip vim golang-go git-core && \
+	wget unzip vim golang-go git-core xvfb libfontconfig wkhtmltopdf && \
 	apt-get clean
 
 
@@ -36,8 +36,11 @@ RUN unzip master.zip && mv /workdir/phplist-plugin-common-master/plugins/* /var/
 RUN wget -P /workdir/ https://github.com/bramley/phplist-plugin-rssfeed/archive/master.zip
 RUN unzip master.zip && mv /workdir/phplist-plugin-rssfeed-master/plugins/* /var/www/phplist/public_html/lists/admin/plugins/ && rm -rfv /workdir/master.zip /workdir/phplist*
 
+# Fetch latest translations from Github
+RUN rm -rfv /var/www/phplist/public_html/lists/texts/ && git clone https://github.com/phpList/phplist-lan-texts.git /var/www/phplist/public_html/lists/texts/
+
 # Install cron
-COPY app /usr/src/cron 
+COPY app /usr/src/cron
 COPY build.sh /opt/build.sh
 RUN /opt/build.sh
 
