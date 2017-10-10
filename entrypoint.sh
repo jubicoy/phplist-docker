@@ -20,6 +20,10 @@ if [ ! -d /volume/rss ]; then
 	mkdir -p /volume/rss/
 fi
 
+if [ ! -d /volume/image_generation ]; then
+  mkdir -p /volume/image_generation
+fi
+
 sed -i "s/MYSQL_HOST/${MYSQL_HOST}/g" $CONFIG
 sed -i "s/MYSQL_DATABASE/${MYSQL_DATABASE}/g" $CONFIG
 sed -i "s/MYSQL_USER/${MYSQL_USER}/g" $CONFIG
