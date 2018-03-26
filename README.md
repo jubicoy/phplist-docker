@@ -18,3 +18,6 @@ SMTP_PORT
 SMTP_USER
 
 SMTP_PASS
+
+Configure timezone with env variable TZ, e.g
+TZ="Europe/Helsinki"
