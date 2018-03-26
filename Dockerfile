@@ -49,6 +49,9 @@ COPY config/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 # Create folder for RSS feed and images
 RUN ln -s /volume/rss /var/www/phplist/public_html/ && ln -s /volume/image_generation /var/www/phplist/public_html/
 
+# Set timezone
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
 RUN chown -R 104:0 /var/www && chmod -R g+rw /var/www && \
 	chmod a+x /workdir/entrypoint.sh && chmod g+rw /workdir
 
