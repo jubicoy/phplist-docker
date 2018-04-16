@@ -1,5 +1,6 @@
 FROM jubicoy/nginx-php:php7
 ENV PHPLIST_VERSION 3.3.1
+ENV RSS_PLUGIN_VERSION 2.5.4
 
 RUN apt-get update && \
 	apt-get -y install php7.0-mysql php7.0-xml php7.0-common php7.0-dom php7.0-xml \
@@ -33,8 +34,8 @@ RUN wget -P /workdir/ https://github.com/bramley/phplist-plugin-common/archive/m
 RUN unzip master.zip && mv /workdir/phplist-plugin-common-master/plugins/* /var/www/phplist/public_html/lists/admin/plugins/ && rm -rfv /workdir/master.zip /workdir/phplist*
 
 # Install rss plugin
-RUN wget -P /workdir/ https://github.com/bramley/phplist-plugin-rssfeed/archive/master.zip
-RUN unzip master.zip && mv /workdir/phplist-plugin-rssfeed-master/plugins/* /var/www/phplist/public_html/lists/admin/plugins/ && rm -rfv /workdir/master.zip /workdir/phplist*
+RUN wget -P /workdir/ https://github.com/bramley/phplist-plugin-rssfeed/archive/${RSS_PLUGIN_VERSION}.zip
+RUN unzip ${RSS_PLUGIN_VERSION}.zip && mv /workdir/phplist-plugin-rssfeed-${RSS_PLUGIN_VERSION}/plugins/* /var/www/phplist/public_html/lists/admin/plugins/ && rm -rfv /workdir/${RSS_VERSION_PLUGIN}.zip /workdir/phplist*
 
 # Fetch latest translations from Github
 RUN rm -rfv /var/www/phplist/public_html/lists/texts/ && git clone https://github.com/phpList/phplist-lan-texts.git /var/www/phplist/public_html/lists/texts/
