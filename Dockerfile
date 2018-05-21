@@ -4,7 +4,7 @@ ENV RSS_PLUGIN_VERSION 2.5.4
 
 RUN apt-get update && \
 	apt-get -y install php7.0-mysql php7.0-xml php7.0-common php7.0-dom php7.0-xml \
-	php7.0-simplexml php7.0-zip libxml2-dev php7.0-mbstring curl \
+	php7.0-simplexml php7.0-zip libxml2-dev php7.0-mbstring php7.0-curl curl \
 	wget unzip vim golang-go git-core xvfb libfontconfig wkhtmltopdf && \
 	apt-get clean
 
