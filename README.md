@@ -3,13 +3,13 @@ Phplist mailing system in Docker to be used with Openshift
 
 Use the following environment variables to configure phplist
 
-DB_HOST
+MYSQL_HOST
 
-DB_NAME
+MYSQL_DATABASE
 
-DB_USER
+MYSQL_USER
 
-DB_PASS
+MYSQL_PASSWORD
 
 SMTP_HOST
 
@@ -21,3 +21,6 @@ SMTP_PASS
 
 Configure timezone with env variable TZ, e.g
 TZ="Europe/Helsinki"
+
+Add cron jobs with TASK_name variable, e.g
+TASK_test="0 55 9 * * 1|/bin/bash /root/script.sh"
