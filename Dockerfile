@@ -58,6 +58,8 @@ RUN chown -R 104:0 /var/www && chmod -R g+rw /var/www && \
 
 RUN sed -i '/auto_prepend_file =/c\; auto_prepend_file =' /etc/php/7.0/fpm/php.ini
 
+COPY admin/index.php /var/www/phplist/public_html/lists/admin/index.php
+
 VOLUME ["/volume"]
 EXPOSE 5000
 
