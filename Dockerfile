@@ -1,4 +1,4 @@
-FROM jubicoy/nginx-php:php7
+FROM jubicoy/nginx-php:php7-ubuntu
 ENV PHPLIST_VERSION 3.3.1
 ENV RSS_PLUGIN_VERSION 2.5.4
 
