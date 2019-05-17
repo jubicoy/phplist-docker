@@ -37,6 +37,10 @@ RUN unzip master.zip && mv /workdir/phplist-plugin-common-master/plugins/* /var/
 RUN wget -P /workdir/ https://github.com/bramley/phplist-plugin-rssfeed/archive/${RSS_PLUGIN_VERSION}.zip
 RUN unzip ${RSS_PLUGIN_VERSION}.zip && mv /workdir/phplist-plugin-rssfeed-${RSS_PLUGIN_VERSION}/plugins/* /var/www/phplist/public_html/lists/admin/plugins/ && rm -rfv /workdir/${RSS_VERSION_PLUGIN}.zip /workdir/phplist*
 
+# Install Placeholder plugin
+COPY plugin/PlaceholderPlugin.zip /workdir/
+RUN unzip /workdir/PlaceholderPlugin.zip -d /var/www/phplist/public_html/lists/admin/plugins/
+
 # Fetch latest translations from Github
 RUN rm -rfv /var/www/phplist/public_html/lists/texts/ && git clone https://github.com/phpList/phplist-lan-texts.git /var/www/phplist/public_html/lists/texts/
 
@@ -59,7 +63,6 @@ RUN chown -R 104:0 /var/www && chmod -R g+rw /var/www && \
 RUN sed -i '/auto_prepend_file =/c\; auto_prepend_file =' /etc/php/7.0/fpm/php.ini
 
 COPY admin/index.php /var/www/phplist/public_html/lists/admin/index.php
-COPY plugin/PlaceholderPlugin.php /var/www/phplist/public_html/lists/admin/plugins/PlaceholderPlugin.php
 
 VOLUME ["/volume"]
 EXPOSE 5000
